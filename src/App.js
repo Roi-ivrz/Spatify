@@ -2,11 +2,20 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+let defaultGreyStyle = {
+  display: 'inline-block',
+  color: '#696969'
+}
+
+let defaultGreenStyle = {
+  'font-size': '25px',
+  color: '#2DD393'
+}
 class Aggregate extends Component {
   render() {
     return(
       <div>
-        <h2 style = {{'font-size': '30px', display: 'inline-block', color: '#696969'}}> Numbered text</h2>
+        <h2 style = {{...defaultGreyStyle, 'font-size': '30px', width: '30%'}}> Numbered text</h2>
       </div>
     );
   }
@@ -26,9 +35,9 @@ class Filters extends Component {
 class Playlist extends Component {
   render() {
     return(
-      <div  style = {{'font-size': '15 px', color: '#696969', width: '25%', display: 'inline-block'}}>
+      <div  style = {{...defaultGreyStyle, 'font-size': '15 px', width: '25%'}}>
         <img/>
-        <h3>Playlist Name</h3>
+        <h3 style = {{defaultGreenStyle}}>Playlist Name</h3>
         <ul><li>Song1</li><li>Song2</li><li>Song3</li></ul>
       </div>
     );
