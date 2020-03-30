@@ -8,9 +8,10 @@ let defaultGreyStyle = {
 }
 
 let defaultGreenStyle = {
-  'font-size': '25px',
+  'font-size': '20px',
   color: '#2DD393'
 }
+
 class Aggregate extends Component {
   render() {
     return(
@@ -35,9 +36,9 @@ class Filters extends Component {
 class Playlist extends Component {
   render() {
     return(
-      <div  style = {{...defaultGreyStyle, 'font-size': '15 px', width: '25%'}}>
+      <div style = {{...defaultGreyStyle, 'font-size': '15 px', width: '25%'}}>
         <img/>
-        <h3 style = {{defaultGreenStyle}}>Playlist Name</h3>
+        <h3 style = {defaultGreenStyle}>Playlist Name</h3>
         <ul><li>Song1</li><li>Song2</li><li>Song3</li></ul>
       </div>
     );
