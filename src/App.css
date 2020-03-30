@@ -1,3 +1,8 @@
+html, body {
+  background-color: rgb(245, 243, 238);
+}
+
+
 .App {
   text-align: center;
 }
@@ -25,10 +30,5 @@
 
 h1 {
   font-size: 60px;
-  color: rgb(45, 211, 147);
-}
-
-h3 {
-  font-size: 25px;
   color: rgb(45, 211, 147);
 }
