@@ -13,15 +13,43 @@ let fakeServerData={
     playlists: [
       {
         name: 'NO SLEEP',
-        song: ['I fall in love too easily', 'calla lilies', 'swell', 'vibes', 'can we kiss forever?']
+        songs: [
+                {name: 'I fall in love too easily', duration: 180}, 
+                {name: 'calla lilies', duration: 180}, 
+                {name: 'swell', duration: 180}
+              ]
       },
       {
         name: '2AM beats that hit the feelings',
-        song: ['entertainer', 'the weekend - funk wav remix', 'call out my name']
+        songs: [
+                {name: 'entertainer', duration: 180},
+                {name: 'the weekend - funk wav remix', duration: 180},
+                {name: 'call out my name', duration: 180}
+              ]
       },
       {
         name: 'Flow',
-        song: ['the hills', 'rockin', 'over now']
+        songs: [
+                {name: 'the hills', duration: 180},
+                {name: 'rockin', duration: 180},
+                {name: 'over now', duration: 180},
+                {name: 'the hills', duration: 180},
+                {name: 'rockin', duration: 180},
+                {name: 'over now', duration: 180},
+                {name: 'the hills', duration: 180},
+                {name: 'rockin', duration: 180},
+                {name: 'over now', duration: 180},
+                {name: 'the hills', duration: 180},
+                {name: 'rockin', duration: 180},
+                {name: 'over now', duration: 180},
+                {name: 'the hills', duration: 180},
+                {name: 'rockin', duration: 180},
+                {name: 'over now', duration: 180},
+                {name: 'the hills', duration: 180},
+                {name: 'rockin', duration: 180},
+                {name: 'rockin', duration: 180},
+                {name: 'over now', duration: 180}
+              ]
       },
     ]
   }
@@ -31,14 +59,31 @@ let defaultGreenStyle={
   color: '#2DD393'
 }
 
-class Aggregate extends Component {
+class PlaylistCounter extends Component {
   render() {
     return(
       <div>
-        {this.props.playlists &&
         <h2 style={{...defaultGreyStyle, 'font-size': '30px', width: '30%'}}>
-          {this.props.playlists.length} playlists
-        </h2>}
+          {this.props.playlists.length} Playlists
+        </h2>
+      </div>
+    );
+  }
+}
+
+class PlaylistHour extends Component {
+  render() {
+    let allSongs = this.props.playlists.reduce((songs,eachPlaylist) => {
+      return songs.concat(eachPlaylist.songs)
+    },[])
+    let sumDuration = allSongs.reduce((sum,eachSong) => {
+      return sum + eachSong.duration
+    }, 0)
+    return(
+      <div>
+        <h2 style={{...defaultGreyStyle, 'font-size': '30px', width: '60%'}}>
+          {((sumDuration/3600)*100.0) / 100.0} Hours/{((sumDuration/60)*100.0) / 100.0} Minutes
+        </h2>
       </div>
     );
   }
@@ -81,18 +126,20 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.serverData.user && 
-        <h1>
-          {this.state.serverData.user.name}'s Playlist
-        </h1>}
-        <Aggregate playlists={this.state.serverData.user && 
-                              this.state.serverData.user.playlists}/>
-        <Aggregate/>
-        <Filters/>
-        <Playlist/>
-        <Playlist/>
-        <Playlist/>
-        <Playlist/>
+        {this.state.serverData.user ? 
+        <div>
+          <h1>
+            {this.state.serverData.user.name}'s Playlist
+          </h1>
+          <PlaylistCounter playlists={this.state.serverData.user.playlists}/>
+          <PlaylistHour playlists={this.state.serverData.user.playlists}/>
+          <Filters/>
+          <Playlist/>
+          <Playlist/>
+          <Playlist/>
+          <Playlist/>
+        </div>: <h4>One Moment...</h4>
+        }
       </div>
     );
   }
