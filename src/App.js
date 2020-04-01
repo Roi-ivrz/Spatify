@@ -7,6 +7,11 @@ let defaultGreyStyle={
   color: '#696969'
 }
 
+let defaultGreenStyle={
+  'font-size': '20px',
+  color: '#2DD393'
+}
+
 let fakeServerData={
   user:{
     name: 'Roy',
@@ -33,30 +38,10 @@ let fakeServerData={
                 {name: 'the hills', duration: 180},
                 {name: 'rockin', duration: 180},
                 {name: 'over now', duration: 180},
-                {name: 'the hills', duration: 180},
-                {name: 'rockin', duration: 180},
-                {name: 'over now', duration: 180},
-                {name: 'the hills', duration: 180},
-                {name: 'rockin', duration: 180},
-                {name: 'over now', duration: 180},
-                {name: 'the hills', duration: 180},
-                {name: 'rockin', duration: 180},
-                {name: 'over now', duration: 180},
-                {name: 'the hills', duration: 180},
-                {name: 'rockin', duration: 180},
-                {name: 'over now', duration: 180},
-                {name: 'the hills', duration: 180},
-                {name: 'rockin', duration: 180},
-                {name: 'rockin', duration: 180},
-                {name: 'over now', duration: 180}
               ]
       },
     ]
   }
-}
-let defaultGreenStyle={
-  'font-size': '20px',
-  color: '#2DD393'
 }
 
 class PlaylistCounter extends Component {
@@ -102,11 +87,16 @@ class Filters extends Component {
 
 class Playlist extends Component {
   render() {
+    let playlist = this.props.playlist
     return(
-      <div style={{...defaultGreyStyle, 'font-size': '15 px', width: '25%'}}>
+      <div style={{...defaultGreyStyle, 'font-size': '15 px', width: '30%'}}>
         <img/>
-        <h3 style={defaultGreenStyle}>Playlist Name</h3>
-        <ul><li>Song1</li><li>Song2</li><li>Song3</li></ul>
+        <h3 style={defaultGreenStyle}>{playlist.name}</h3>
+        <ul>          
+          {playlist.songs.map(song => 
+            <li>{song.name}</li>
+          )}
+        </ul>
       </div>
     );
   }
@@ -134,10 +124,10 @@ class App extends Component {
           <PlaylistCounter playlists={this.state.serverData.user.playlists}/>
           <PlaylistHour playlists={this.state.serverData.user.playlists}/>
           <Filters/>
-          <Playlist/>
-          <Playlist/>
-          <Playlist/>
-          <Playlist/>
+          {this.state.serverData.user.playlists.map(playlist => 
+            <Playlist playlist = {playlist}/>
+          )}
+
         </div>: <h4>One Moment...</h4>
         }
       </div>
