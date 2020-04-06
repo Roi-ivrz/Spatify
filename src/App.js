@@ -179,9 +179,13 @@ render() {
     let playlistRender = 
     this.state.user && 
     this.state.playlists 
-    ? this.state.playlists.filter(playlist =>
-      playlist.name.toLowerCase().includes(this.state.filterString.toLowerCase())) 
-      : []
+    ? this.state.playlists.filter(playlist => {
+      let matchPlaylist = playlist.name.toLowerCase().includes(
+        this.state.filterString.toLowerCase())
+      let matchSong = playlist.songs.find(song => song.name.toLowerCase()
+        .includes(this.state.filterString.toLocaleLowerCase()))
+      return matchPlaylist || matchSong
+        }) : []
     return (
       <div className="App">
         {this.state.user ? 
