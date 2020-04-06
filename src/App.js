@@ -116,6 +116,8 @@ class App extends Component {
   componentDidMount() {
     let parsed = queryString.parse(window.location.search)
     let accessToken = parsed.access_token
+    if(!accessToken)
+      return;
 
     fetch('https://api.spotify.com/v1/me', {
       headers: {'Authorization': 'Bearer ' + accessToken}
@@ -168,7 +170,11 @@ render() {
             <Playlist playlist={playlist} />
           )}
 
-        </div>: <button onClick={() => window.location='http://localhost:8888/login'}
+        </div>: <button onClick={() => {
+          window.location=window.location.href.includes('localhost') 
+            ? 'http://localhost:8888/login'
+            : 'https://spatifyv2-backend.herokuapp.com/login'
+        }}
           style={{padding: '20px', 'fontSize': '50px', 'marginTop': '20px'}}>
           Spotify Sign in</button>
         }
