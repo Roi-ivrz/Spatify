@@ -69,7 +69,7 @@ class PlaylistHour extends Component {
     return(
       <div>
         <h2 style={{...defaultGreyStyle, 'fontSize': '30px', width: '60%'}}>
-          {((sumDuration/3600)*100.0) / 100.0} Hours/{((sumDuration/60)*100.0) / 100.0} Minutes
+          {Math.floor(sumDuration / 60)} Hours {(sumDuration % 60).toFixed(1)} Minutes
         </h2>
       </div>
     );
@@ -96,7 +96,7 @@ class Playlist extends Component {
         <img src={playlist.imageUrl} style={{width: '160px'}}/>
         <h3 style={defaultGreenStyle}>{playlist.name}</h3>
         <ul>          
-          {playlist.songs.map(song => 
+          {playlist.songs.slice(0,3).map(song => 
             <li>{song.name}</li>
           )}
         </ul>
@@ -131,18 +131,48 @@ class App extends Component {
     fetch('https://api.spotify.com/v1/me/playlists', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
-    .then(data => this.setState({
-        playlists: data.items.map(item => {
-        console.log(data.items)
+    .then(playlistData => {
+      let playlists = playlistData.items
+      let trackDataPromises = playlists.map(playlist => {
+        let responsePromise = fetch(playlist.tracks.href, {
+          headers: {'Authorization': 'Bearer ' + accessToken}
+        })
+        let trackDataPromise = responsePromise
+          .then(response => response.json())
+        return trackDataPromise
+      })
+      
+      
+      let allTracksDataPromises = 
+        Promise.all(trackDataPromises)
+      let playlistsPromise = allTracksDataPromises.then(tracksData => {
+          tracksData.forEach((trackData, i) => {
+            playlists[i].tracksData = trackData.items
+            .map(item => item.track)
+            .map(trackData => ({
+              name: trackData.name,
+              duration: trackData.duration_ms / 60000
+            }))
+          })
+          return playlists
+        })
+        return playlistsPromise
+    })
+    .then(playlists => this.setState({
+        playlists: playlists.map(item => {
+        console.log(item.tracksData)
           return {
             name: item.name,
             imageUrl: item.images[0].url,
-            songs: []
+            songs: item.tracksData
           }
-        })
+      })
     }))
-
+  
+  
   }
+  
+  
 
   
 render() {
