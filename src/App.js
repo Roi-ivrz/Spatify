@@ -20,7 +20,7 @@ let defaultGreenStyle={
 
 let counterStyle={...defaultGreyStyle, 
   'fontSize': '30px', 
-  width: '30%',
+  width: '60%',
   'margin-top': '10px',
   'margin-bottom': '10px',
   display: 'inline-block',
