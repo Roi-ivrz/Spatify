@@ -10,7 +10,8 @@ let defaultGreyStyle={
   'font-family': 'Montserrat',
   'font-weight': '300',
   'fontSize': '15 px',
-  'font-style': 'italic'
+  'font-style': 'italic',
+  'margin-top': '10px'
 }
 
 let defaultGreenStyle={
@@ -23,8 +24,7 @@ let counterStyle={...defaultGreyStyle,
   width: '60%',
   'margin-top': '10px',
   'margin-bottom': '10px',
-  display: 'inline-block',
-
+  display: 'inline-block'
 }
 
 class PlaylistCounter extends Component {
@@ -62,10 +62,11 @@ class Filters extends Component {
     return(
       <div style={defaultGreyStyle}>
         <img/>
-        <input type='text' onKeyUp={event => 
+        <input type='text' placeholder="Search" onKeyUp={event => 
           this.props.onTextChange(event.target.value)}
           style={{'font-size': '15 px',
       padding: '10px'}}/>
+        
       </div>
     );
   }
@@ -113,15 +114,21 @@ class App extends Component {
     fetch('https://api.spotify.com/v1/me', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
+    //.then(data => console.log(data.images[0].url))
     .then(data => this.setState({
         user: {
-          name: data.display_name
+          name: data.display_name,
+          followers: data.followers.total,
+          imageUrl: data.images[0].url
+
         }
     }))
+    
 
     fetch('https://api.spotify.com/v1/me/playlists', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
+
     .then(playlistData => {
       let playlists = playlistData.items
       let trackDataPromises = playlists.map(playlist => {
@@ -151,7 +158,6 @@ class App extends Component {
     })
     .then(playlists => this.setState({
         playlists: playlists.map(item => {
-        console.log(item.tracksData)
           return {
             name: item.name,
             imageUrl: item.images[0].url,
@@ -183,11 +189,18 @@ render() {
         <div>
           <h1 style={{
             'font-family': 'Montserrat',
-            'font-weight': '700'
+            'font-weight': '700',
+            display: 'inline-block'
           }}>
-             {this.state.user.name}'s Playlists
+            {this.state.user.name}'s Playlists
           </h1>
-
+          <img src={this.state.user.imageUrl} style={{width: '150px',
+          'border-radius': '50%',
+          'margin-left':'30px'}}/>
+          <h2 style={defaultGreyStyle}>
+            Followers: {this.state.user.followers}
+          </h2>
+        
           <PlaylistCounter playlists={playlistRender}/>
           <PlaylistHour playlists={playlistRender}/>
           
