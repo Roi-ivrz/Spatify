@@ -1,10 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:ital,wght@0,600;0,700;1,300&display=swap');
+
+
 html, body {
   background-color: rgb(245, 243, 238);
+  padding: 20px;
 }
 
 
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -29,11 +33,14 @@ html, body {
 }
 
 h1 {
-  font-size: 60px;
+  font-size: 80px;
   color: rgb(45, 211, 147);
+  width: '120%';
+  margin-top: '5px';
+  
 }
 
 button {
   font-size: 50px;
-  color: rgb(45, 211, 147)
+  color: rgb(45, 211, 147);
 }
