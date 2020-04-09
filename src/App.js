@@ -5,13 +5,14 @@ import './App.css';
 import queryString from 'query-string';
 
 
+
 let defaultGreyStyle={
   color: '#696969',
-  'font-family': 'Montserrat',
-  'font-weight': '300',
+  'fontFamily': 'Montserrat',
+  'fontWeight': '300',
   'fontSize': '15 px',
-  'font-style': 'italic',
-  'margin-top': '10px'
+  'fontStyle': 'italic',
+  'marginop': '6px'
 }
 
 let defaultGreenStyle={
@@ -19,11 +20,16 @@ let defaultGreenStyle={
   color: '#2DD393'
 }
 
+let defaultGoldStyle={
+  'fontSize': '20px',
+  color: '#FFDF00'
+}
+
 let counterStyle={...defaultGreyStyle, 
   'fontSize': '30px', 
   width: '60%',
-  'margin-top': '10px',
-  'margin-bottom': '10px',
+  'marginTop': '10px',
+  'marginBottom': '10px',
   display: 'inline-block'
 }
 
@@ -64,7 +70,7 @@ class Filters extends Component {
         <img/>
         <input type='text' placeholder="Search" onKeyUp={event => 
           this.props.onTextChange(event.target.value)}
-          style={{'font-size': '15 px',
+          style={{'fontSize': '15 px',
       padding: '10px'}}/>
         
       </div>
@@ -75,25 +81,34 @@ class Filters extends Component {
 class Playlist extends Component {
   render() {
     let playlist = this.props.playlist
+    let playlistStyle = defaultGreenStyle
+    
+    if(playlist.collaborative === true) {
+      //console.log(playlist.collaborative)
+      playlistStyle = defaultGoldStyle
+       } else {
+        playlistStyle = defaultGreenStyle
+      }
+    
     return(
       <div style={{...defaultGreyStyle, 
       width: '30%',
       padding: '10px',
       display: 'inline-block'}}>
         <img src={playlist.imageUrl} style={{width: '200px'}}/>
-        <h3 style={{...defaultGreenStyle,
-        'font-size': '25px',
-        'font-family': 'Montserrat',
-        'font-weight': '600',
-        'font-style': 'normal',
-        'padding-top': '6px'}}>{playlist.name}</h3>
+        <h3 style={{...playlistStyle,
+        'fontSize': '25px',
+        'fontFamily': 'Montserrat',
+        'fontWeight': '600',
+        'fontStyle': 'normal',
+        'paddingTop': '6px'}}>{playlist.name}</h3>
         <ul>          
           {playlist.songs.slice(0,3).map(song => 
-            <li style={{'padding-top': '6px'}}>{song.name}</li>
+            <li style={{'paddingTop': '6px'}}>{song.name}</li>
           )}
         </ul>
       </div>
-    );
+    )
   }
 }
 
@@ -111,20 +126,61 @@ class App extends Component {
     if(!accessToken)
       return;
 
+//PERSONAL DATA
     fetch('https://api.spotify.com/v1/me', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
-    //.then(data => console.log(data.images[0].url))
     .then(data => this.setState({
         user: {
           name: data.display_name,
           followers: data.followers.total,
-          imageUrl: data.images[0].url
-
+          imageUrl: data.images[0].url,
+          profileUri: data.uri
         }
     }))
+
+
+//TOP ARTISTS
+
+    fetch('https://api.spotify.com/v1/me/top/artists', {
+      headers: {'Authorization': 'Bearer ' + accessToken}
+    }).then(response => response.json())
+    .then(data => {
+      let topArtists = data.items
+    })
+    .then(topArtists => this.setState({
+      topArtists: topArtists.map(item => {
+        return {
+          name: item.name
+        }
+    })
+  }))
+ 
     
 
+//RECOMMENDATION
+let limit = '5'
+let genre = 'EDM'
+let market = 'US'
+let seedArtists = '4NHQUGzhtTLFvgF5SZesLK'
+let seedTrack = '0c6xIDDpzE81m2q797ordA'
+let minEnergy = '0.4'
+let minPopularity = '50'
+
+    fetch('https://api.spotify.com/v1/recommendations?'
+    +'limit='+limit
+    +'&market='+market
+    +'&seed_artists='+seedArtists
+    +'&seed_genres='+genre
+    +'&seed_tracks='+seedTrack
+    +'&min_energy='+minEnergy
+    +'&min_popularity='+minPopularity, {
+      headers: {'Authorization': 'Bearer ' + accessToken}
+    })
+    
+    .then(response => response.json())
+
+//PLAYLISTS
     fetch('https://api.spotify.com/v1/me/playlists', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
@@ -156,17 +212,17 @@ class App extends Component {
         })
         return playlistsPromise
     })
-    .then(playlists => this.setState({
+      .then(playlists => this.setState({
         playlists: playlists.map(item => {
           return {
             name: item.name,
             imageUrl: item.images[0].url,
-            songs: item.tracksData
+            songs: item.tracksData,
+            collaborative: item.collaborative
+            
           }
       })
     }))
-  
-  
   }
   
   
@@ -188,15 +244,16 @@ render() {
         {this.state.user ? 
         <div>
           <h1 style={{
-            'font-family': 'Montserrat',
-            'font-weight': '700',
+            'fontFamily': 'Montserrat',
+            'fontWeight': '700',
             display: 'inline-block'
           }}>
             {this.state.user.name}'s Playlists
           </h1>
-          <img src={this.state.user.imageUrl} style={{width: '150px',
-          'border-radius': '50%',
-          'margin-left':'30px'}}/>
+          <button onClick={() => window.location = this.state.user.profileUri} id="close-image">
+            <img src={this.state.user.imageUrl}></img>
+          </button>
+
           <h2 style={defaultGreyStyle}>
             Followers: {this.state.user.followers}
           </h2>
@@ -223,6 +280,5 @@ render() {
     );
   }
 }
-
 
 export default App;

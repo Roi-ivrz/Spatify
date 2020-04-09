@@ -23,6 +23,25 @@ html, body {
   color: rgb(255, 255, 255);
 }
 
+button {
+  display: inline-block;
+  height: 154px;
+  padding: 0;
+  vertical-align: top;
+  width: 154px;
+  margin-left: 20px;
+margin-top: 10px;
+  border-radius: 50%;
+}
+
+#close-image img {
+  display: block;
+  height: 150px;  
+  width: 150px;
+  
+  border-radius: 50%;
+}
+
 .App-intro {
   font-size: large;
 }
@@ -35,8 +54,7 @@ html, body {
 h1 {
   font-size: 80px;
   color: rgb(45, 211, 147);
-  width: '100%';
-  margin-top: '5px';
+  margin-top: 50px;
   
 }
 
