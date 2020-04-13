@@ -22,7 +22,7 @@ let defaultGreenStyle={
 
 let defaultGoldStyle={
   'fontSize': '20px',
-  color: '#FFDF00'
+  color: '#FCD12A'
 }
 
 let counterStyle={...defaultGreyStyle, 
@@ -84,12 +84,10 @@ class Playlist extends Component {
     let playlistStyle = defaultGreenStyle
     
     if(playlist.collaborative === true) {
-      //console.log(playlist.collaborative)
       playlistStyle = defaultGoldStyle
        } else {
         playlistStyle = defaultGreenStyle
       }
-    
     return(
       <div style={{...defaultGreyStyle, 
       width: '30%',
@@ -111,6 +109,18 @@ class Playlist extends Component {
     )
   }
 }
+
+// class TopArtists extends Component{
+//   render() {
+//     let topArtists = this.state.topArtists
+//     console.log(this.state.user.name)
+//     return (
+//       <div style={defaultGreyStyle}> 
+//         <h3>im gay</h3>
+//       </div>
+//     )
+//   }
+// }
 
 class App extends Component {
   constructor() {
@@ -140,32 +150,36 @@ class App extends Component {
     }))
 
 
-//TOP ARTISTS
 
+
+//TOP ARTISTS
+    let topArtist = []
     fetch('https://api.spotify.com/v1/me/top/artists', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
-    .then(data => {
-      let topArtists = data.items
-    })
-    .then(topArtists => this.setState({
-      topArtists: topArtists.map(item => {
-        return {
-          name: item.name
-        }
-    })
-  }))
- 
-    
+    .then(data => data.items.slice(0,5).map(item => {
+        return topArtist.push(item.name)
+      }))
 
-//RECOMMENDATION
-let limit = '5'
-let genre = 'EDM'
-let market = 'US'
-let seedArtists = '4NHQUGzhtTLFvgF5SZesLK'
-let seedTrack = '0c6xIDDpzE81m2q797ordA'
-let minEnergy = '0.4'
-let minPopularity = '50'
+    console.log(topArtist)
+    console.log(typeof(topArtist[0]))
+
+
+
+
+
+    //RECOMMENDATION
+    let limit = '5'
+    let genre = 'EDM'
+    let market = 'US'
+    let seedArtists = ''
+    let top = ''
+
+
+    let seedTrack = '0c6xIDDpzE81m2q797ordA'
+    let minEnergy = '0.4'
+    let minPopularity = '50'
+
 
     fetch('https://api.spotify.com/v1/recommendations?'
     +'limit='+limit
@@ -184,7 +198,6 @@ let minPopularity = '50'
     fetch('https://api.spotify.com/v1/me/playlists', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
-
     .then(playlistData => {
       let playlists = playlistData.items
       let trackDataPromises = playlists.map(playlist => {
@@ -226,7 +239,6 @@ let minPopularity = '50'
   }
   
   
-
   
 render() {
     let playlistRender = 
@@ -247,8 +259,7 @@ render() {
             'fontFamily': 'Montserrat',
             'fontWeight': '700',
             display: 'inline-block'
-          }}>
-            {this.state.user.name}'s Playlists
+          }}>            {this.state.user.name}'s Playlists
           </h1>
           <button onClick={() => window.location = this.state.user.profileUri} id="close-image">
             <img src={this.state.user.imageUrl}></img>
@@ -267,6 +278,7 @@ render() {
           {playlistRender.map(playlist => 
             <Playlist playlist={playlist} />
           )}
+          {/* <TopArtists/> */}
 
         </div>: <button onClick={() => {
           window.location=window.location.href.includes('localhost') 
